@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
     "test": "vitest",
     "start": "wrangler dev"
   },
@@ -11,6 +13,7 @@
     "@cloudflare/workers-types": "^4.20230419.0",
     "@types/bluebird": "^3.5.38",
     "miniflare": "^3.20230904.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.0.4",
     "vitest": "^0.34.4",
     "vitest-environment-miniflare": "^2.14.1",

@@ -59,3 +59,12 @@ export type ExtensionMap = typeof EXTENSION_MIME_MAP;
 export type Extension = keyof ExtensionMap;
 export type Mime = ExtensionMap[Extension]["mime"];
 
+
+export const isExtension = (path: string): path is Extension => {
+  return Object.keys(EXTENSION_MIME_MAP).includes(path.toLowerCase());
+};
+
+export function isCode(extension: Extension): boolean {
+  return ['py', 'ts', 'js', '.sh', '.bash'].includes(extension);
+}
+

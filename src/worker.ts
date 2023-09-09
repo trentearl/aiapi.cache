@@ -2,45 +2,14 @@ import { any, resolve } from "bluebird";
 
 import * as types from "./types";
 import * as html from "./html";
-import * as mime from "./mime";
+import * as lib from './lib';
+
+const WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
 
 export interface Env {
   OPENAI_API_KEY: string;
   airesponses: R2Bucket;
   aikv: KVNamespace;
-}
-
-function stringify(messages: types.OAiChatMessage[]): string {
-  return JSON.stringify(messages);
-}
-
-function lowerCase(messages: types.OAiChatMessage[]): types.OAiChatMessage[] {
-  return messages.map((message) => {
-    return {
-      ...message,
-      content: message.content.toLowerCase(),
-    };
-  });
-}
-
-function clean(messages: types.OAiChatMessage[]): types.OAiChatMessage[] {
-  return messages.map((message) => {
-    return {
-      ...message,
-      content: message.content.trim(),
-    };
-  });
-}
-
-async function hash(parts: (string | number)[]): Promise<string> {
-  const s = parts.join(":");
-  return crypto.subtle
-    .digest("SHA-1", new TextEncoder().encode(s))
-    .then((hash) => {
-      return Array.from(new Uint8Array(hash))
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-    });
 }
 
 export const shouldCache = (request: Request): boolean => {
@@ -56,6 +25,7 @@ export const shouldCache = (request: Request): boolean => {
 
   return true;
 }
+
 
 export default {
   async fetch(
@@ -115,15 +85,6 @@ export default {
   },
 };
 
-const isExtension = (path: string): path is mime.Extension => {
-  return Object.keys(mime.EXTENSION_MIME_MAP).includes(path.toLowerCase());
-};
-
-function isCode(extension: mime.Extension): boolean {
-  return ['py', 'ts', 'js', '.sh', '.bash'].includes(extension);
-
-}
-
 const handleGetRequest = async (
   request: Request,
   env: Env,
@@ -133,10 +94,10 @@ const handleGetRequest = async (
 
   let pathParts = decodeURIComponent(url.pathname.slice(1)).split(".");
 
-  let extension: mime.Extension;
+  let extension: lib.Extension;
   let maybeExtension = pathParts[pathParts.length - 1];
 
-  if (isExtension(maybeExtension)) {
+  if (lib.isExtension(maybeExtension)) {
     pathParts.pop();
     extension = maybeExtension;
   } else {
@@ -157,8 +118,8 @@ const handleGetRequest = async (
       extension == "yml" ||
       extension == "yaml"
     ) {
-      prompt += `generate parseble ${mime.EXTENSION_MIME_MAP[extension].mime}`;
-    } else if (isCode(extension)) {
+      prompt += `generate parseble ${lib.EXTENSION_MIME_MAP[extension].mime}`;
+    } else if (lib.isCode(extension)) {
       prompt += `you generate exclusively uncommented runnable ${extension} code`;
     }
     prompt += `dont include examples, without logging`;
@@ -199,7 +160,7 @@ end of instruction
   });
 
   const choices = res.choices.filter((c) =>
-    mime.EXTENSION_MIME_MAP[extension].validate(c.message.content),
+    lib.EXTENSION_MIME_MAP[extension].validate(c.message.content),
   );
 
   if (choices.length === 0) {
@@ -217,8 +178,8 @@ end of instruction
     await cacheResponse(params, res, env);
   }
 
-  let mimeType = mime.EXTENSION_MIME_MAP[extension].mime;
-  if (request.headers.get('Sec-Fetch-Dest') == 'iframe' && isCode(extension)) {
+  let mimeType = lib.EXTENSION_MIME_MAP[extension].mime;
+  if (request.headers.get('Sec-Fetch-Dest') == 'iframe' && lib.isCode(extension)) {
     mimeType = 'text/plain';
   }
 
@@ -304,13 +265,13 @@ const cacheResponse = async (
   env: Env,
 ): Promise<void> => {
   const responseString = JSON.stringify(response, null, 2);
-  const keys = await getCacheKeys(params);
+  const keys = await lib.getCacheKeys(params);
   const cacheWrites: Promise<any>[] = [
     ...keys.map((key) =>
-      env.aikv.put(key, response.id, { expirationTtl: 60 * 60 * 24 * 7 }),
+      env.aikv.put(key, response.id, { expirationTtl: WEEK_IN_SECONDS }),
     ),
     env.aikv.put(response.id, responseString, {
-      expirationTtl: 60 * 60 * 24 * 7,
+      expirationTtl: WEEK_IN_SECONDS,
     }),
     env.airesponses.put(response.id, responseString),
   ];
@@ -321,7 +282,7 @@ const getCached = async (
   params: types.OAiChatParams,
   env: Env,
 ): Promise<types.OAiChatResponse | null> => {
-  const keys = await getCacheKeys(params);
+  const keys = await lib.getCacheKeys(params);
   try {
     const cachedChat = await any(
       keys.map(async (key) => {
@@ -349,23 +310,3 @@ const getCached = async (
   return null;
 };
 
-const getCacheKeys = async (params: types.OAiChatParams): Promise<string[]> => {
-  const keys = await resolve([
-    [
-      stringify(clean(params.messages)),
-      params.model,
-      params.n,
-      params.temperature,
-      params.top_p,
-    ],
-    [
-      stringify(clean(lowerCase(params.messages))),
-      params.model,
-      params.n,
-      params.temperature,
-      params.top_p,
-    ],
-  ]).map(hash);
-
-  return keys;
-};
