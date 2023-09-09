@@ -46,6 +46,7 @@ export const landingHtml = `
         <h1>😎 OpenAI caching proxy 💵</h1>
     </header>
 <main>
+    <a href="https://github.com/trentearl/aiapi.cache">github repo</a>
     <p>This is an api to help developers use openAI with caching.</p>
     <h1>Proxy/Post Mode</h1>
     <span>Proxy mode mirrors the openai chat api and adds caching</span>
