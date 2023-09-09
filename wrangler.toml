@@ -1,0 +1,16 @@
+name = "aicash"
+main = "src/worker.ts"
+compatibility_date = "2023-08-21"
+
+[vars]
+
+[[kv_namespaces]]
+binding = "aikv"
+preview_id = "f5816ee895b04dbcbbc5b90d3c464d64"
+id = "6fd30b2d7dab4a1f98adf983715f20b7"
+
+[[r2_buckets]]
+binding = "airesponses"
+bucket_name = "airesponses"
+preview_bucket_name = "airesponses"
+
