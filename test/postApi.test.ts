@@ -10,13 +10,18 @@ describe("POST /", () => {
       method: "POST",
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "system", content: "who is the leader of Cambodia. just output the name" }]
-      })
-    })
+        messages: [
+          {
+            role: "system",
+            content: "who is the leader of Cambodia. just output the name",
+          },
+        ],
+      }),
+    });
 
     const fetchMock = getMiniflareFetchMock();
     fetchMock.disableNetConnect();
-    const origin = fetchMock.get("https://api.openai.com")
+    const origin = fetchMock.get("https://api.openai.com");
 
     origin
       .intercept({ method: "POST", path: "/v1/chat/completions" })

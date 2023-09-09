@@ -2,7 +2,7 @@ import { any, resolve } from "bluebird";
 
 import * as types from "./types";
 import * as html from "./html";
-import * as lib from './lib';
+import * as lib from "./lib";
 
 const WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
 
@@ -24,14 +24,10 @@ export const shouldCache = (request: Request): boolean => {
   }
 
   return true;
-}
-
+};
 
 export default {
-  async fetch(
-    request: Request,
-    env: Env,
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const cache = shouldCache(request);
     const url = new URL(request.url);
     if (url.pathname === "/" && request.method === "GET") {
@@ -65,7 +61,6 @@ export default {
         throw new Error("No API key");
       }
       const data = await handleChat({ params, env, cache, key });
-
 
       return new Response(JSON.stringify(data, null, 2), {
         headers: {
@@ -168,7 +163,7 @@ end of instruction
       status: 420,
       headers: {
         "Content-Type": "text/html",
-      }
+      },
     });
   }
 
@@ -179,8 +174,11 @@ end of instruction
   }
 
   let mimeType = lib.EXTENSION_MIME_MAP[extension].mime;
-  if (request.headers.get('Sec-Fetch-Dest') == 'iframe' && lib.isCode(extension)) {
-    mimeType = 'text/plain';
+  if (
+    request.headers.get("Sec-Fetch-Dest") == "iframe" &&
+    lib.isCode(extension)
+  ) {
+    mimeType = "text/plain";
   }
 
   return new Response(content, {
@@ -216,7 +214,7 @@ const handleChat = async ({
   }
 
   return response;
-}
+};
 
 const runChat = async ({
   params,
@@ -304,9 +302,8 @@ const getCached = async (
 
     return cachedChat;
   } catch (e) {
-    console.warn('getCache error', e);
+    console.warn("getCache error", e);
   }
 
   return null;
 };
-

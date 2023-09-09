@@ -1,6 +1,9 @@
 import * as types from "../types";
 
-export const noChoices = (url: URL, response: types.OAiChatResponse): string => {
+export const noChoices = (
+  url: URL,
+  response: types.OAiChatResponse,
+): string => {
   return `<h1>No valid choices</h1>
 <h2> Try again?</h2>
 <textarea style="width: 100%;">${decodeURIComponent(url.pathname)}</textarea>
@@ -23,4 +26,4 @@ console.log("click")
 <ol>
 ${response.choices.map((c) => `<li><pre>${c}</pre></li>`).join("\n")}
 </ol>`;
-}
+};

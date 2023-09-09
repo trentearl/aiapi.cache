@@ -6,11 +6,11 @@ const describe = setupMiniflareIsolatedStorage();
 
 describe("GET", () => {
   test("uncached success", async () => {
-    const req = new Request(`${PREFIX}/what is the capital of azerbaijan.json`)
+    const req = new Request(`${PREFIX}/what is the capital of azerbaijan.json`);
 
     const fetchMock = getMiniflareFetchMock();
     fetchMock.disableNetConnect();
-    const origin = fetchMock.get("https://api.openai.com")
+    const origin = fetchMock.get("https://api.openai.com");
 
     origin
       .intercept({ method: "POST", path: "/v1/chat/completions" })
@@ -25,4 +25,3 @@ describe("GET", () => {
     });
   });
 });
-

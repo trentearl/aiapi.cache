@@ -1,6 +1,6 @@
-import { resolve } from 'bluebird';
+import { resolve } from "bluebird";
 
-import * as types from '../types';
+import * as types from "../types";
 
 export async function hash(parts: (string | number)[]): Promise<string> {
   const s = parts.join(":");
@@ -13,7 +13,9 @@ export async function hash(parts: (string | number)[]): Promise<string> {
     });
 }
 
-export const getCacheKeys = async (params: types.OAiChatParams): Promise<string[]> => {
+export const getCacheKeys = async (
+  params: types.OAiChatParams,
+): Promise<string[]> => {
   const keys = await resolve([
     [
       stringify(clean(params.messages)),
@@ -54,4 +56,3 @@ function lowerCase(messages: types.OAiChatMessage[]): types.OAiChatMessage[] {
     };
   });
 }
-

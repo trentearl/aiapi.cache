@@ -1,5 +1,4 @@
-
-import * as types from '../src/types'
+import * as types from "../src/types";
 
 export const openAiTextResponse: types.OAiChatResponse = {
   id: "1324",
@@ -10,17 +9,17 @@ export const openAiTextResponse: types.OAiChatResponse = {
       index: 0,
       message: {
         role: "assistant",
-        content: "Hun Sen"
+        content: "Hun Sen",
       },
-      finish_reason: "stop"
-    }
+      finish_reason: "stop",
+    },
   ],
   usage: {
     prompt_tokens: 0,
     completion_tokens: 0,
-    total_tokens: 0
-  }
-}
+    total_tokens: 0,
+  },
+};
 
 export const openAiJsonResponse: types.OAiChatResponse = {
   id: "1234",
@@ -31,15 +30,14 @@ export const openAiJsonResponse: types.OAiChatResponse = {
       index: 0,
       message: {
         role: "assistant",
-        content: '{"city":"baku"}'
+        content: '{"city":"baku"}',
       },
-      finish_reason: "stop"
-    }
+      finish_reason: "stop",
+    },
   ],
   usage: {
     prompt_tokens: 0,
     completion_tokens: 0,
-    total_tokens: 0
-  }
-}
-
+    total_tokens: 0,
+  },
+};

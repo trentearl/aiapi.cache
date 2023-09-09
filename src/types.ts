@@ -31,7 +31,6 @@ export type OAiLogitBias = z.infer<typeof OAiLogitBiasZ>;
 export const OAiStopZ = z.array(z.string()).nullable().default(null);
 export type OAiStop = z.infer<typeof OAiStopZ>;
 
-
 export const OAiChatModelZ = z.union([
   z.literal("gpt-4"),
   z.literal("gpt-4-32k"),
@@ -48,7 +47,6 @@ export type OAiModelDetail<T extends OAiModel | OAiChatModel> = {
   model: T;
   max_tokens: number;
 };
-
 
 export const OAI_CHAT_MODELS: OAiModelDetail<OAiChatModel>[] = [
   {
@@ -85,7 +83,6 @@ export const OAiResponseZ = z.object({
 });
 
 export type OAiResponse = z.infer<typeof OAiResponseZ>;
-
 
 export const OAiChatChoiceZ = z.object({
   index: z.number().nullable(),

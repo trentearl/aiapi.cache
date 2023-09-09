@@ -1,4 +1,3 @@
-
 export const landingHtml = `
 <!DOCTYPE html>
 <html lang="en">

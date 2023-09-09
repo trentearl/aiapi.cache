@@ -1,3 +1,2 @@
-export * from './landing'
-export * from './noChoices'
-
+export * from "./landing";
+export * from "./noChoices";

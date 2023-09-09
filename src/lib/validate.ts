@@ -31,7 +31,7 @@ export const isJs = (s: string) =>
   s.startsWith("let");
 
 export const isTs = (s: string) => {
-  return isJs(s) || s.startsWith("interface") || s.startsWith("type")
-}
+  return isJs(s) || s.startsWith("interface") || s.startsWith("type");
+};
 export const isCss = (_: string) => true;
 export const isMarkdown = (_: string) => true;
