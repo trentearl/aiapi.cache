@@ -76,7 +76,6 @@ export default {
       return handleGetRequest(request, env, cache);
     }
 
-
     try {
       const body = await request.json();
       const parsed = types.OAiChatParamsZ.safeParse(body);
@@ -95,7 +94,8 @@ export default {
       if (!key) {
         throw new Error("No API key");
       }
-      const data = await runChat({ params, env, cache, key });
+      const data = await handleChat({ params, env, cache, key });
+
 
       return new Response(JSON.stringify(data, null, 2), {
         headers: {
@@ -225,6 +225,7 @@ end of instruction
   return new Response(content, {
     headers: {
       "Content-Type": mimeType,
+      "X-AI-API-Cached": res.usage.total_tokens == 0 ? "true" : "false",
     },
   });
 };
@@ -242,7 +243,7 @@ const handleChat = async ({
   key,
   cache,
 }: ChatProps): Promise<types.OAiChatResponse> => {
-  const response = await handleChat({
+  const response = await runChat({
     params,
     env,
     cache,
