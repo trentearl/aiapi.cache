@@ -64,7 +64,7 @@ export default {
   ): Promise<Response> {
     const cache = shouldCache(request);
     const url = new URL(request.url);
-    if (url.pathname === "/") {
+    if (url.pathname === "/" && request.method === "GET") {
       return new Response(html.landingHtml, {
         headers: {
           "Content-Type": "text/html",
@@ -325,7 +325,7 @@ const getCached = async (
     const cachedChat = await any(
       keys.map(async (key) => {
         const objectId = await env.aikv.get(key);
-        if (!objectId) throw new Error("no object");
+        if (!objectId) throw new Error("no object " + objectId);
         const cachedString = await any([
           env.aikv.get(objectId),
           env.airesponses.get(objectId).then((res) => res?.text()),
@@ -342,7 +342,7 @@ const getCached = async (
 
     return cachedChat;
   } catch (e) {
-    console.log(e);
+    console.warn('getCache error', e);
   }
 
   return null;

@@ -4,12 +4,16 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
+    "test": "vitest",
     "start": "wrangler dev"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230419.0",
     "@types/bluebird": "^3.5.38",
+    "miniflare": "^3.20230904.0",
     "typescript": "^5.0.4",
+    "vitest": "^0.34.4",
+    "vitest-environment-miniflare": "^2.14.1",
     "wrangler": "^3.0.0"
   },
   "dependencies": {
